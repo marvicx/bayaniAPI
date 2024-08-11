@@ -33,7 +33,7 @@ class AuthController extends Controller
         $user->password = bcrypt(request()->password);
         $user->save();
 
-        return response()->json($user, 201);
+        return $this->login();
     }
 
 
@@ -50,7 +50,14 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        $user = auth()->user();
+        return response()->json([
+            'email' => $user->email,
+            'localId' => $user->id,
+            'status' => $user->status,
+            'idToken' => $token,
+            'expiresIn' => auth()->factory()->getTTL() * 60
+        ]);
     }
 
     /**
