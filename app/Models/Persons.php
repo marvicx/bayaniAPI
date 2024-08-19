@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Persons extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'FirstName',
+        'LastName',
+        'MiddleName',
+        'suffix',
+        'birthdate',
+        'gender',
+        'civilStatus',
+        'religion',
+        'educationalAttainment',
+        'course',
+        'addressID',
+        'employmentDetailsID',
+        'tags',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'birthdate' => 'date',
+    ];
+}
