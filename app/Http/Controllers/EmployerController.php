@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\api\EmployerRequest;
 use App\Models\Employer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,7 +27,7 @@ class EmployerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(EmployerRequest $request)
+    public function store(Request $request)
     {
         try {
 

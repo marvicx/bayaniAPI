@@ -20,8 +20,8 @@ return new class extends Migration
             $table->json('tags')->nullable();
             $table->dateTime('published_date')->nullable();
             $table->boolean('is_published')->default(false);
-            $table->unsignedInteger('views')->default(0);
-            $table->json('attachments')->nullable();
+            $table->integer('views')->default(0);
+            $table->string('attachments')->nullable();
             $table->timestamps();
         });
     }
