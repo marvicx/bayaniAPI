@@ -5,6 +5,7 @@ use App\Http\Controllers\api\auth\ForgotPasswordController;
 use App\Http\Controllers\api\auth\ResetPasswordController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\InformationPostController;
+use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\PersonController;
 
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,6 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::apiResource('persons', PersonController::class);
         Route::apiResource('employers', EmployerController::class);
         Route::apiResource('information', InformationPostController::class);
+        Route::apiResource('jobs', JobPostController::class);
     });
 });

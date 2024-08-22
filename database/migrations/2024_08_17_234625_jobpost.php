@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('job_location_address_country');
             $table->decimal('base_salary_value', 10, 2);
             $table->string('base_salary_currency', 3);
-            $table->string('base_salary_unit_text');
+            $table->string('base_salary_unit_text')->nullable();
             $table->string('job_benefits')->nullable();
             $table->text('responsibilities')->nullable();
             $table->text('qualifications')->nullable();
@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('job_location_type')->nullable();
             $table->string('work_hours')->nullable();
             $table->string('tags')->nullable();
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }
