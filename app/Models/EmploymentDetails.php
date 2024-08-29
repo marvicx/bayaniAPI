@@ -23,7 +23,7 @@ class EmploymentDetails extends Model
      */
     protected $fillable = [
         'employerName',
-        'employerAddressID',
+        'userId',
         'vessel',
         'occupation',
         'monthlySalary',
@@ -36,8 +36,8 @@ class EmploymentDetails extends Model
         'status',
     ];
 
-    public function person()
+    public function user()
     {
-        return $this->hasOne(Persons::class, 'employmentDetailsID', 'id');
+        return $this->belongsTo(User::class);
     }
 }

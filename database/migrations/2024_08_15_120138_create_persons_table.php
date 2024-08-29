@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('course')->nullable();
             $table->integer('addressID')->nullable();
             $table->string('tags')->nullable();
+            $table->string('passportNo')->nullable();
 
             $table->timestamps();
         });

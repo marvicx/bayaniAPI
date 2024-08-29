@@ -46,4 +46,9 @@ class InformationPost extends Model
         'is_published' => 'boolean',
         'views' => 'integer',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

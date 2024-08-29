@@ -28,6 +28,7 @@ class Persons extends Model
         'addressID',
         'employmentDetailsID',
         'tags',
+        'passportNo'
     ];
 
     /**

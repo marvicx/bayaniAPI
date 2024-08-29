@@ -27,6 +27,7 @@ class JobPostController extends Controller
     public function store(Request $request)
     {
         $rules = [
+            'postedby' => 'required',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'date_posted' => 'required|date',
@@ -84,6 +85,23 @@ class JobPostController extends Controller
         }
     }
 
+    public function getJobPostsByUser(string $userId)
+    {
+        try {
+            // Fetch all posts by the given user ID
+            $posts = JobPost::where('postedby', $userId)->get();
+
+            // If no posts are found, return a 404 error response
+            if ($posts->isEmpty()) {
+                return $this->sendError('No posts found for this user', [], 404);
+            }
+
+            return $this->sendSuccess($posts, 'Posts fetched successfully', 200);
+        } catch (\Throwable $th) {
+            return $this->sendError('Unexpected error occurred', $th->getMessage(), 500);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -96,6 +114,7 @@ class JobPostController extends Controller
                 return $this->sendError('job not found', [], 404);
             }
             $rules = [
+                'postedby' => 'required',
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'date_posted' => 'required|date',

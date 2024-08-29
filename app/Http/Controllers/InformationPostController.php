@@ -74,6 +74,22 @@ class InformationPostController extends Controller
         }
     }
 
+    public function getPostsByUser(string $userId)
+    {
+        try {
+            // Fetch all posts by the given user ID
+            $posts = InformationPost::where('userID', $userId)->get();
+
+            // If no posts are found, return a 404 error response
+            if ($posts->isEmpty()) {
+                return $this->sendError('No posts found for this user', [], 404);
+            }
+
+            return $this->sendSuccess($posts, 'Posts fetched successfully', 200);
+        } catch (\Throwable $th) {
+            return $this->sendError('Unexpected error occurred', $th->getMessage(), 500);
+        }
+    }
 
     /**
      * Update the specified resource in storage.

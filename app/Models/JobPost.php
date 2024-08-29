@@ -47,7 +47,8 @@ class JobPost extends Model
         'job_location_type',
         'work_hours',
         'tags',
-        'status'
+        'status',
+        'postedby'
     ];
 
     /**
@@ -60,4 +61,8 @@ class JobPost extends Model
         'valid_through' => 'date',
         'base_salary_value' => 'decimal:2',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -31,7 +31,7 @@ class EmploymentDetailsController extends Controller
 
         $rules = [
             'employerName' => 'required',
-            'employerAddressID' => 'required',
+            'userId' => 'required',
             'vessel' => 'nullable',
             'occupation' => 'required',
             'monthlySalary' => 'required',
@@ -49,42 +49,59 @@ class EmploymentDetailsController extends Controller
         if ($validator->fails()) {
             return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
         }
+        $emp = EmploymentDetails::create($request->only(array_keys($rules)));
+        return $this->sendSuccess($emp, 'Employment created successfully', 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($userId)
     {
-        $employmentDetail = EmploymentDetails::findOrFail($id);
-        return response()->json($employmentDetail);
+        try {
+            $details = EmploymentDetails::where('userId', $userId)->get();
+            // If the person is not found, return a 404 error response
+            if (!$details) {
+                return $this->sendError('Employment Details not found', [], 404);
+            }
+
+            return $this->sendSuccess($details, 'Employment fetched successfully', 201);
+        } catch (\Throwable $th) {
+            return $this->sendError('unexpectedError', $th, 500);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $employmentDetailId)
     {
-        $employmentDetail = EmploymentDetails::findOrFail($id);
-
-        $validatedData = $request->validate([
-            'employerName' => 'required|string|max:255',
-            'employerAddressID' => 'required|string|max:255',
-            'vessel' => 'nullable|string|max:255',
-            'occupation' => 'required|string|max:255',
-            'monthlySalary' => 'required|string|max:255',
-            'agencyName' => 'nullable|string|max:255',
-            'contractDuration' => 'required|string|max:255',
-            'ofwType' => 'required|string|max:255',
-            'jobSite' => 'required|string|max:255',
-            'passport_attachment' => 'nullable|string|max:255',
-            'coe_attachment' => 'nullable|string|max:255',
+        $employment = EmploymentDetails::find($employmentDetailId);
+        if (!$employment) {
+            return $this->sendError('employment not found', [], 404);
+        }
+        $rules = [
+            'employerName' => 'required',
+            'userId' => 'required',
+            'vessel' => 'nullable',
+            'occupation' => 'required',
+            'monthlySalary' => 'required',
+            'agencyName' => 'nullable',
+            'contractDuration' => 'required',
+            'ofwType' => 'required',
+            'jobSite' => 'required',
+            'passport_attachment' => 'nullable',
+            'coe_attachment' => 'nullable',
             'status' => 'boolean',
-        ]);
+        ];
 
-        $employmentDetail->update($validatedData);
-
-        return response()->json($employmentDetail);
+        $validator = Validator::make($request->all(), $rules);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
+        }
+        $employment->update($request->only(array_keys($rules)));
+        return $this->sendSuccess($employment, 'Employment created successfully', 201);
     }
 
     /**
