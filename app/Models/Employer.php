@@ -33,6 +33,10 @@ class Employer extends Model
      */
     public function address()
     {
-        return $this->belongsTo(Address::class, 'addressID');
+        return $this->belongsTo(Address::class, 'addressID', 'id');
+    }
+    public function user()
+    {
+        return $this->hasOne(User::class, 'employerID', 'id');
     }
 }

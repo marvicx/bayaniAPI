@@ -14,16 +14,17 @@ return new class extends Migration
         Schema::create('employment_Details', function (Blueprint $table) {
             $table->id();
             $table->string('employerName');
-            $table->string('employerAddressID');
-            $table->string('vessel');
-            $table->string('occupation');
-            $table->string('monthlySalary');
-            $table->string('agencyName');
-            $table->string('contractDuration');
-            $table->string('ofwType');
-            $table->string('jobSite');
-            $table->string('passport_attachment');
-            $table->string('coe_attachment');
+            $table->string('personID')->nullable();
+            $table->string('vessel')->nullable();
+            $table->string('occupation')->nullable();
+            $table->string('monthlySalary')->nullable();
+            $table->string('agencyName')->nullable();
+            $table->string('contractDuration')->nullable();
+            $table->string('ofwType')->nullable();
+            $table->string('jobSite')->nullable();
+            $table->string('passport_attachment')->nullable();
+            $table->string('coe_attachment')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

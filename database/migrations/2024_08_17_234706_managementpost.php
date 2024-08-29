@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('is_published')->default(false);
             $table->integer('views')->default(0);
             $table->string('attachments')->nullable();
+            $table->string('userID')->nullable();
             $table->timestamps();
         });
     }

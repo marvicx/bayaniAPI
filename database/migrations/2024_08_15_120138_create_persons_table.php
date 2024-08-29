@@ -13,19 +13,18 @@ return new class extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->id();
-            $table->string('FirstName');
-            $table->string('LastName');
-            $table->string('MiddleName');
-            $table->string('suffix');
-            $table->date('birthdate');
-            $table->string('gender');
-            $table->string('civilStatus');
-            $table->string('religion');
-            $table->string('educationalAttainment');
-            $table->string('course');
-            $table->integer('addressID');
-            $table->string('employmentDetailsID');
-            $table->string('tags');
+            $table->string('FirstName')->nullable();
+            $table->string('LastName')->nullable();
+            $table->string('MiddleName')->nullable();
+            $table->string('suffix')->nullable();
+            $table->date('birthdate')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('civilStatus')->nullable();
+            $table->string('religion')->nullable();
+            $table->string('educationalAttainment')->nullable();
+            $table->string('course')->nullable();
+            $table->integer('addressID')->nullable();
+            $table->string('tags')->nullable();
 
             $table->timestamps();
         });

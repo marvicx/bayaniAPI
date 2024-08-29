@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('employers', function (Blueprint $table) {
             $table->id();
-            $table->string('companyName');
-            $table->string('companyType');
+            $table->string('companyName')->nullable();
+            $table->string('companyType')->nullable();
             $table->string('same_as')->nullable(); // URL of the employer's website
             $table->string('logo')->nullable(); // URL of the employer's logo
             $table->string('industry')->nullable(); // Industry the employer operates in
             $table->text('description')->nullable(); // Description of the employer
-            $table->longText('mission');
-            $table->longText('vission');
-            $table->integer('addressID');
+            $table->longText('mission')->nullable();
+            $table->longText('vision')->nullable();
+            $table->integer('addressID')->nullable();
             $table->timestamps();
         });
     }

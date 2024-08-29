@@ -13,19 +13,18 @@ return new class extends Migration
     {
         Schema::create('address', function (Blueprint $table) {
             $table->id();
-            $table->string('userID');
-            $table->string('provinceID');
-            $table->string('cityID');
-            $table->string('barangayID');
-            $table->string('zipcode');
-            $table->string('street');
-            $table->string('mobileNo');
-            $table->string('email');
-            $table->string('telephoneNo');
-            $table->string('fax');
-            $table->string('ofwForeignAddress');
-            $table->string('ofwCountry');
-            $table->string('ofwContactNo');
+            $table->string('provinceID')->nullable();
+            $table->string('cityID')->nullable();
+            $table->string('barangayID')->nullable();
+            $table->string('zipcode')->nullable();
+            $table->string('street')->nullable();
+            $table->string('mobileNo')->nullable();
+            $table->string('email')->nullable();
+            $table->string('telephoneNo')->nullable();
+            $table->string('fax')->nullable();
+            $table->string('ofwForeignAddress')->nullable();
+            $table->string('ofwCountry')->nullable();
+            $table->string('ofwContactNo')->nullable();
             $table->timestamps();
         });
     }

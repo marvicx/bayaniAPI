@@ -18,8 +18,12 @@ class PersonController extends Controller
      */
     public function index(): JsonResponse
     {
-        $persons = Persons::all();
-        return response()->json($persons);
+        try {
+            $persons = Persons::all();
+            return $this->sendSuccess($persons, 'persons fetched successfully', 201);
+        } catch (\Throwable $th) {
+            return $this->sendError('unexpectedError', $th, 500);
+        }
     }
 
     /**
@@ -44,7 +48,6 @@ class PersonController extends Controller
             'educationalAttainment' => 'nullable|string|max:100',
             'course' => 'nullable|string|max:100',
             'addressID' => 'nullable|integer',
-            'employmentDetailsID' => 'nullable|string|max:50',
             'tags' => 'nullable|string|max:255',
         ];
 
@@ -73,10 +76,23 @@ class PersonController extends Controller
      * @param  Persons  $person
      * @return JsonResponse
      */
-    public function show($personId): JsonResponse
+    public function show($userId): JsonResponse
     {
         try {
-            $person = Persons::find($personId);
+
+            $person = Persons::whereHas('user', function ($query) use ($userId) {
+                $query->where('id', $userId);
+            })->first();
+
+            // $person = Persons::with(['user', 'address'])->whereHas('user', function ($query) use ($userId) {
+            //     $query->where('id', $userId);
+            // })->first();
+
+            // $person = Persons::join('users', 'persons.id', '=', 'users.PersonID')
+            //     ->where('users.id', $userId)
+            //     ->select('persons.*', 'users.email', 'users.name', 'users.id as userId')
+            //     ->firstOrFail();
+
             // If the person is not found, return a 404 error response
             if (!$person) {
                 return $this->sendError('Person not found', [], 404);

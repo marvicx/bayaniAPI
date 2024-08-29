@@ -69,11 +69,13 @@ class EmployerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($employerId)
+    public function show($userId)
     {
 
         try {
-            $employer = Employer::find($employerId);
+            $employer = Employer::whereHas('user', function ($query) use ($userId) {
+                $query->where('id', $userId);
+            })->first();
             // If the person is not found, return a 404 error response
             if (!$employer) {
                 return $this->sendError('Employer not found', [], 404);

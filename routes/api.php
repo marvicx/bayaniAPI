@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\api\auth\AuthController;
 use App\Http\Controllers\api\auth\ForgotPasswordController;
 use App\Http\Controllers\api\auth\ResetPasswordController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\EmploymentDetailsController;
 use App\Http\Controllers\InformationPostController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\PersonController;
@@ -26,5 +28,7 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::apiResource('employers', EmployerController::class);
         Route::apiResource('information', InformationPostController::class);
         Route::apiResource('jobs', JobPostController::class);
+        Route::apiResource('addresses', AddressController::class);
+        Route::apiResource('employment', EmploymentDetailsController::class);
     });
 });

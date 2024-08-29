@@ -38,4 +38,21 @@ class Persons extends Model
     protected $casts = [
         'birthdate' => 'date',
     ];
+
+    /**
+     * Get the address associated with the employer.
+     */
+    public function address()
+    {
+        return $this->belongsTo(Address::class, 'addressID', 'id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'personID', 'id');
+    }
+    public function employmentDetails()
+    {
+        return $this->hasOne(EmploymentDetails::class, 'employmentDetailsID', 'id');
+    }
 }
