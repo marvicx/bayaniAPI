@@ -23,7 +23,7 @@ class EmploymentDetails extends Model
      */
     protected $fillable = [
         'employerName',
-        'userId',
+        'personID',
         'vessel',
         'occupation',
         'monthlySalary',

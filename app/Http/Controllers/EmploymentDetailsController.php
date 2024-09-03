@@ -7,7 +7,7 @@ use App\Models\EmploymentDetails;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Log;
 class EmploymentDetailsController extends Controller
 {
     /**
@@ -28,10 +28,11 @@ class EmploymentDetailsController extends Controller
      */
     public function store(Request $request)
     {
-
+         // Log request data
+        Log::info('Request Data: ', $request->all());
         $rules = [
             'employerName' => 'required',
-            'userId' => 'required',
+            'personID' => 'required',
             'vessel' => 'nullable',
             'occupation' => 'required',
             'monthlySalary' => 'required',
@@ -59,7 +60,7 @@ class EmploymentDetailsController extends Controller
     public function show($userId)
     {
         try {
-            $details = EmploymentDetails::where('userId', $userId)->get();
+            $details = EmploymentDetails::where('personID', $userId)->get();
             // If the person is not found, return a 404 error response
             if (!$details) {
                 return $this->sendError('Employment Details not found', [], 404);
@@ -82,7 +83,7 @@ class EmploymentDetailsController extends Controller
         }
         $rules = [
             'employerName' => 'required',
-            'userId' => 'required',
+            'personID' => 'required',
             'vessel' => 'nullable',
             'occupation' => 'required',
             'monthlySalary' => 'required',

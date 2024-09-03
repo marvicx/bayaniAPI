@@ -78,10 +78,10 @@ class EmployerController extends Controller
             })->first();
             // If the person is not found, return a 404 error response
             if (!$employer) {
-                return $this->sendError('Employer not found', [], 404);
+                return response()->noContent();
             }
 
-            // Return a JSON response or view 
+            // Return a JSON response or view
             return $this->sendSuccess($employer, 'Employer fetched successfully', 201);
         } catch (\Throwable $th) {
             return $this->sendError('unexpectedError', $th, 500);
