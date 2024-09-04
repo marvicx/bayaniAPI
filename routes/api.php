@@ -6,6 +6,7 @@ use App\Http\Controllers\api\auth\ForgotPasswordController;
 use App\Http\Controllers\api\auth\ResetPasswordController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\EmploymentDetailsController;
+use App\Http\Controllers\EventImageController;
 use App\Http\Controllers\InformationPostController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\PersonController;
@@ -32,5 +33,6 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::get('jobs/user/{userId}', [JobPostController::class, 'getJobPostsByUser']);
         Route::apiResource('addresses', AddressController::class);
         Route::apiResource('employment', EmploymentDetailsController::class);
+        Route::apiResource('event-images', EventImageController::class);
     });
 });

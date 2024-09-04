@@ -33,11 +33,11 @@ class InformationPostController extends Controller
             $rules = [
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
-                'author' => 'required|string|max:100',
+                'author' => 'required',
                 'category' => 'nullable|string|max:100',
                 'tags' => 'nullable|array',
                 'published_date' => 'nullable|date',
-                'is_published' => 'required|boolean',
+                'is_published' => 'boolean',
                 // 'views' => 'nullable',
                 'attachments' => 'nullable',
                 'userID' => 'required|integer',
