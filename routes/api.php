@@ -33,6 +33,7 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::get('jobs/user/{userId}', [JobPostController::class, 'getJobPostsByUser']);
         Route::apiResource('addresses', AddressController::class);
         Route::apiResource('employment', EmploymentDetailsController::class);
-        Route::apiResource('event-images', EventImageController::class);
+        Route::apiResource('eventImages', EventImageController::class);
+        Route::get('eventImages/information/{postid}', [EventImageController::class, 'getImageByPostId']);
     });
 });

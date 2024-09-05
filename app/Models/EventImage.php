@@ -27,14 +27,14 @@ class EventImage extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class, 'userID', 'id');
     }
 
     /**
      * Get the post that the event image belongs to.
      */
-    public function post()
+    public function InformationPost()
     {
-        return $this->belongsTo(InformationPost::class, 'id');
+        return $this->belongsTo(InformationPost::class, 'postID', 'id');
     }
 }

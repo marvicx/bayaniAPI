@@ -51,4 +51,8 @@ class InformationPost extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function eventImage()
+    {
+        return $this->hasMany(EventImage::class);
+    }
 }
