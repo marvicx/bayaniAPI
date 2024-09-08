@@ -29,22 +29,37 @@ class EventImageController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
+            $rules = [
                 'userID' => 'required|integer|exists:users,id',
                 'postID' => 'required|integer|exists:information_posts,id',
-                'image' => 'required|image|max:2048',
-            ]);
+                'images' => 'required|array',
+                'images.*' => 'required|image',  // Validate each file in the array
+            ];
 
-            $path = $request->file('image')->store('event_images', 'public');
+            // Validate the request
+            $validator = Validator::make($request->all(), $rules);
+            // Check if validation fails
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
+            }
 
-            $eventImage = EventImage::create([
-                'userID' => $request->userID,
-                'postID' => $request->postID,
-                'image' => $request->file('image')->getClientOriginalName(),
-                'path' => $path,
-            ]);
+            $eventImages = [];
+            foreach ($request->file('images') as $file) {
+                // Store each image and get the file path
+                $path = $file->store('event_images', 'public');
 
-            return $this->sendSuccess($eventImage, 'Image saved successfully', 200);
+                // Create a record for each image
+                $eventImage = EventImage::create([
+                    'userID' => $request->userID,
+                    'postID' => $request->postID,
+                    'image' => $file->getClientOriginalName(),
+                    'path' => $path,
+                ]);
+
+                $eventImages[] = $eventImage;
+            }
+
+            return $this->sendSuccess($eventImages, 'Images saved successfully', 200);
         } catch (\Throwable $th) {
             return $this->sendError('unexpectedError', $th, 500);
         }
@@ -100,7 +115,7 @@ class EventImageController extends Controller
         if (!$eventImage) {
             return $this->sendError('image not found', [], 404);
         }
-
+        return $eventImage;
         $rules = [
             'userID' => 'required|integer|exists:users,id',
             'postID' => 'required|integer|exists:information_posts,id',
@@ -136,16 +151,21 @@ class EventImageController extends Controller
     /**
      * Remove the specified event image from storage.
      */
-    public function destroy($id)
+    public function destroy(EventImage $eventImage)
     {
-        $eventImage = EventImage::findOrFail($id);
+        // Check if the image exists
+        if (!$eventImage) {
+            return $this->sendError('Image not found', 404);
+        }
 
-        if ($eventImage->path) {
+        // Delete the image file if it exists
+        if ($eventImage->path && Storage::disk('public')->exists($eventImage->path)) {
             Storage::disk('public')->delete($eventImage->path);
         }
 
+        // Delete the image record
         $eventImage->delete();
 
-        return response()->json(null, 204);
+        return $this->sendSuccess(null, 'Image deleted successfully', 200);
     }
 }

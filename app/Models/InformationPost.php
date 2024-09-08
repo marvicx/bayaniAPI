@@ -53,6 +53,6 @@ class InformationPost extends Model
     }
     public function eventImage()
     {
-        return $this->hasMany(EventImage::class);
+        return $this->hasMany(EventImage::class, 'postID', 'id');
     }
 }
