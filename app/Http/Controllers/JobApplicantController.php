@@ -30,6 +30,7 @@ class JobApplicantController extends Controller
                     }]);
             }])->get()->map(function ($applicant) {
                 return [
+                    'id' => $applicant->id,
                     'jobID' => $applicant->jobID,
                     'appliedUserID' => $applicant->appliedUserID,
                     'status' => $applicant->status,
