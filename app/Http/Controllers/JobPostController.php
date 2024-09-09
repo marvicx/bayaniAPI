@@ -53,6 +53,8 @@ class JobPostController extends Controller
             'job_location_type' => 'nullable|string|max:255',
             'work_hours' => 'nullable|string|max:255',
             'tags' => 'nullable|string|max:255',
+            'status' => 'nullable|numeric',
+
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -140,6 +142,7 @@ class JobPostController extends Controller
                 'job_location_type' => 'nullable|string|max:255',
                 'work_hours' => 'nullable|string|max:255',
                 'tags' => 'nullable|string|max:255',
+                'status' => 'nullable|numeric',
             ];
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
