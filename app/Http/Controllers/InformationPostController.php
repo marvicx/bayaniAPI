@@ -17,10 +17,15 @@ class InformationPostController extends Controller
     {
         try {
             $baseUrl = url('/storage/');
-            $posts = InformationPost::with('eventImage')->get();
+
+            // Paginate the posts with related images
+            $posts = InformationPost::with('eventImage')->paginate(10);
+
+            // Transform the items in the paginated result
+            $transformedPosts = $posts->items(); // Get the current page's items
 
             // Map the images and remove the 'eventImage' relationship from the response
-            $posts = $posts->map(function ($post) use ($baseUrl) {
+            $transformedPosts = array_map(function ($post) use ($baseUrl) {
                 $imageUrls = $post->eventImage->map(function ($image) use ($baseUrl) {
                     return $baseUrl . '/' . $image->path;  // Prepend base URL to each image URL
                 })->toArray();
@@ -33,10 +38,26 @@ class InformationPostController extends Controller
                 $postArray['images'] = $imageUrls;
 
                 return $postArray;
-            });
-            return $this->sendSuccess($posts, 'Posts fetched successfully', 200);
+            }, $transformedPosts);
+
+            // Prepare the response with pagination metadata
+            $response = [
+                'data' => $transformedPosts,
+                'current_page' => $posts->currentPage(),
+                'last_page' => $posts->lastPage(),
+                'per_page' => $posts->perPage(),
+                'total' => $posts->total(),
+                'message' => 'Posts fetched successfully',
+                'status' => 200
+            ];
+
+            return response()->json($response, 200);
         } catch (\Throwable $th) {
-            return $this->sendError('unexpectedError', $th, 500);
+            return response()->json([
+                'message' => 'Unexpected error',
+                'error' => $th->getMessage(),
+                'status' => 500
+            ], 500);
         }
     }
 
