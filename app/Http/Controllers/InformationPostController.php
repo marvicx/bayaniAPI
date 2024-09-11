@@ -13,52 +13,63 @@ class InformationPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index(Request $request)
+    // {
+    //     try {
+    //         $baseUrl = url('/storage/');
+    //         $pageSize = $request->input('pageSize', 10);
+    //         $lastPostId = $request->input('lastPostId', 1);
+
+    //         $posts = InformationPost::with('images')
+    //             ->where('id', '>', $lastPostId)
+    //             ->orderBy('id')
+    //             ->take($pageSize)
+    //             ->get();
+
+    //         $posts->transform(function ($post) use ($baseUrl) {
+    //             // Loop through each image in the post
+    //             if ($post->images) {
+    //                 $post->images = $post->images->map(function ($image) use ($baseUrl) {
+    //                     $image->path = $baseUrl . '/' . $image->path; // Attach base URL to the image path
+    //                     return $image;
+    //                 });
+    //             }
+    //             return $post;
+    //         });
+    //         return response()->json([
+    //             'data' => $posts,
+    //             'message' => 'Success'
+    //         ]);
+    //     } catch (\Throwable $th) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Unexpected error',
+    //             'error' => $th->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+    public function index(Request $request)
     {
-        try {
-            $baseUrl = url('/storage/');
+        $baseUrl = url('/storage/');
+        $pageSize = $request->input('pageSize', 10);
+        $page = $request->input('page', 1);
 
-            // Paginate the posts with related images
-            $posts = InformationPost::with('eventImage')->paginate(10);
+        $posts = InformationPost::with('images')
+            ->orderBy('created_at', 'desc')
+            ->paginate($pageSize, ['*'], 'page', $page);
 
-            // Transform the items in the paginated result
-            $transformedPosts = $posts->items(); // Get the current page's items
-
-            // Map the images and remove the 'eventImage' relationship from the response
-            $transformedPosts = array_map(function ($post) use ($baseUrl) {
-                $imageUrls = $post->eventImage->map(function ($image) use ($baseUrl) {
-                    return $baseUrl . '/' . $image->path;  // Prepend base URL to each image URL
-                })->toArray();
-
-                // Convert post to an array and remove 'eventImage', add 'images'
-                $postArray = $post->toArray();
-                unset($postArray['event_image']);  // Remove 'eventImage' from the array
-
-                // Add 'images' field to the post array
-                $postArray['images'] = $imageUrls;
-
-                return $postArray;
-            }, $transformedPosts);
-
-            // Prepare the response with pagination metadata
-            $response = [
-                'data' => $transformedPosts,
-                'current_page' => $posts->currentPage(),
-                'last_page' => $posts->lastPage(),
-                'per_page' => $posts->perPage(),
-                'total' => $posts->total(),
-                'message' => 'Posts fetched successfully',
-                'status' => 200
-            ];
-
-            return response()->json($response, 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Unexpected error',
-                'error' => $th->getMessage(),
-                'status' => 500
-            ], 500);
-        }
+        $posts->transform(function ($post) use ($baseUrl) {
+            // Loop through each image in the post
+            if ($post->images) {
+                $post->images = $post->images->map(function ($image) use ($baseUrl) {
+                    $image->path = $baseUrl . '/' . $image->path; // Attach base URL to the image path
+                    return $image;
+                });
+            }
+            return $post;
+        });
+        return response()->json($posts);
     }
 
 
