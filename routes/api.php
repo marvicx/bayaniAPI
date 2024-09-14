@@ -31,6 +31,8 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::apiResource('information', InformationPostController::class);
         Route::get('information/user/{userId}', [InformationPostController::class, 'getPostsByUser']);
         Route::apiResource('jobs', JobPostController::class);
+        Route::post('jobs/all', [JobPostController::class, 'getAllJobs']);
+        Route::post('jobs/search', [JobPostController::class, 'fetchJobBySearchKey']);
         Route::get('jobs/user/{userId}', [JobPostController::class, 'getJobPostsByUser']);
         Route::apiResource('addresses', AddressController::class);
         Route::apiResource('employment', EmploymentDetailsController::class);

@@ -26,6 +26,7 @@ class Employer extends Model
         'mission',
         'vision',
         'addressID',
+        'address'
     ];
 
     /**

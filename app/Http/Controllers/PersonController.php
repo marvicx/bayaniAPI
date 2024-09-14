@@ -32,43 +32,61 @@ class PersonController extends Controller
      * @param  Request  $request
      * @return JsonResponse
      */
-    public function store(Request $request): JsonResponse
-    {
-        //return $this->sendSuccess('User retrieved successfully');
-        $rules = [
-            'userId' => 'required',
-            'FirstName' => 'required|string|max:255',
-            'LastName' => 'required|string|max:255',
-            'MiddleName' => 'required|string|max:255',
-            'suffix' => 'nullable|string|max:10',
-            'birthdate' => 'required|date',
-            'gender' => 'required|string|max:10',
-            'civilStatus' => 'nullable|string|max:20',
-            'religion' => 'nullable|string|max:50',
-            'educationalAttainment' => 'nullable|string|max:100',
-            'course' => 'nullable|string|max:100',
-            'addressID' => 'nullable|integer',
-            'tags' => 'nullable|string|max:255',
-        ];
+    // public function store(Request $request): JsonResponse
+    // {
+    //     // Define validation rules
+    //     $rules = [
+    //         'userId' => 'required|exists:users,id',
+    //         'FirstName' => 'required|string|max:255',
+    //         'LastName' => 'required|string|max:255',
+    //         'MiddleName' => 'nullable|string|max:255', // made nullable just in case it's optional
+    //         'suffix' => 'nullable|string|max:10',
+    //         'birthdate' => 'required|date',
+    //         'gender' => 'required|string|max:10',
+    //         'civilStatus' => 'nullable|string|max:20',
+    //         'religion' => 'nullable|string|max:50',
+    //         'educationalAttainment' => 'nullable|string|max:100',
+    //         'course' => 'nullable|string|max:100',
+    //         'addressID' => 'nullable|integer',
+    //         'tags' => 'nullable|string|max:255',
+    //         'passportNo' => 'required|string|max:20',
+    //         'cvPath' => 'required|file|mimes:pdf,doc,docx', // Assuming file type and size limits
+    //     ];
 
-        // Validate the request
-        $validator = Validator::make($request->all(), $rules);
-        // Check if validation fails
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
-        }
+    //     // Validate the request
+    //     $validator = Validator::make($request->all(), $rules);
 
-        $person = Persons::create($request->only(array_keys($rules)));
-        $userId = $request->input('userId');
-        $user = User::find($userId);
-        if ($user) {
-            $user->update([
-                'personID' => $person->id, // Assuming 'person_id' is a column in the users table
-            ]);
-        }
-        // Return success response
-        return $this->sendSuccess($person, 'Person created successfully', 201);
-    }
+    //     // Check if validation fails
+    //     if ($validator->fails()) {
+    //         return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
+    //     }
+
+    //     // Handle file upload for cvPath
+    //     $file = $request->file('cvPath');
+    //     $path = $file->store('cvs', 'public');
+
+    //     // Create the Person record without userId and cvPath
+    //     $personData = $request->except('userId', 'cvPath');
+    //     $personData['cvPath'] = $path; // Set the correct path for CV
+
+    //     $person = Persons::create($personData);
+
+    //     // Update user with the personID
+    //     $userId = $request->input('userId');
+    //     $user = User::find($userId);
+
+    //     if ($user) {
+    //         $user->update([
+    //             'personID' => $person->id, // Assuming 'person_id' is the correct field in users table
+    //         ]);
+    //     } else {
+    //         return $this->sendError('User not found', [], 404);
+    //     }
+
+    //     // Return success response
+    //     return $this->sendSuccess($person, 'Person created successfully', 201);
+    // }
+
 
     /**
      * Display the specified resource.
@@ -84,18 +102,13 @@ class PersonController extends Controller
                 $query->where('id', $userId);
             })->first();
 
-            // $person = Persons::with(['user', 'address'])->whereHas('user', function ($query) use ($userId) {
-            //     $query->where('id', $userId);
-            // })->first();
-
-            // $person = Persons::join('users', 'persons.id', '=', 'users.PersonID')
-            //     ->where('users.id', $userId)
-            //     ->select('persons.*', 'users.email', 'users.name', 'users.id as userId')
-            //     ->firstOrFail();
-
             // If the person is not found, return a 404 error response
             if (!$person) {
-                return $this->sendError('Person not found', [], 404);
+                return $this->sendError('Person not found', [], 201);
+            }
+            $baseUrl = url('/storage/');
+            if ($person->cvPath) {
+                $person->cvPath = $baseUrl . '/' . $person->cvPath;
             }
             return $this->sendSuccess($person, 'Person fetched successfully', 201);
         } catch (\Throwable $th) {
@@ -110,48 +123,157 @@ class PersonController extends Controller
      * @param  Persons  $person
      * @return JsonResponse
      */
-    public function update(Request $request, $personId): JsonResponse
-    {
-        try {
-            $person = Persons::find($personId);
-            // If the person is not found, return a 404 error response
-            if (!$person) {
-                return $this->sendError('Person not found', [], 404);
-            }
-            $rules = [
-                'FirstName' => 'required|string|max:255',
-                'LastName' => 'required|string|max:255',
-                'MiddleName' => 'required|string|max:255',
-                'suffix' => 'nullable|string|max:10',
-                'birthdate' => 'required|date',
-                'gender' => 'required|string|max:10',
-                'civilStatus' => 'nullable|string|max:20',
-                'religion' => 'nullable|string|max:50',
-                'educationalAttainment' => 'nullable|string|max:100',
-                'course' => 'nullable|string|max:100',
-                'addressID' => 'nullable|integer',
-                'employmentDetailsID' => 'nullable|string|max:50',
-                'tags' => 'nullable|string|max:255',
-            ];
+    // public function update(Request $request, $personId)
+    // {
+    //     // Find the person by ID
+    //     $person = Persons::find($personId);
 
-            $validator = Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
+    //     // If the person is not found, return a 404 error response
+    //     if (!$person) {
+    //         return $this->sendError('Person not found', [], 404);
+    //     }
+
+    //     // Validation rules
+    //     $rules = [
+    //         'FirstName' => 'required|string|max:255',
+    //         'LastName' => 'required|string|max:255',
+    //         'MiddleName' => 'nullable|string|max:255', // Made nullable as a safeguard
+    //         'suffix' => 'nullable|string|max:10',
+    //         'birthdate' => 'required|date',
+    //         'gender' => 'required|string|max:10',
+    //         'civilStatus' => 'nullable|string|max:20',
+    //         'religion' => 'nullable|string|max:50',
+    //         'educationalAttainment' => 'nullable|string|max:100',
+    //         'course' => 'nullable|string|max:100',
+    //         'addressID' => 'nullable|integer',
+    //         'employmentDetailsID' => 'nullable|string|max:50',
+    //         'tags' => 'nullable|string|max:255',
+    //         'passportNo' => 'required|string|max:20',  // Added length constraint to avoid DB errors
+    //         'cvPath' => 'nullable|file|mimes:pdf,doc,docx|max:2048' // Only require if a file is uploaded
+    //     ];
+
+    //     // Validate the request
+    //     $validator = Validator::make($request->all(), $rules);
+
+    //     // If validation fails, return an error
+    //     if ($validator->fails()) {
+    //         return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
+    //     }
+
+    //     try {
+    //         // Check if a new CV file is uploaded
+    //         if ($request->hasFile('cvPath')) {
+    //             // Handle file upload
+    //             $file = $request->file('cvPath');
+    //             $path = $file->store('cvs', 'public');
+    //             // Merge the new path into the request data
+    //             $request->merge(['cvPath' => $path]);
+    //         } else {
+    //             // Remove cvPath from the update if no new file is uploaded
+    //             $request->request->remove('cvPath');
+    //         }
+
+    //         // Update the person record with the validated data
+    //         $person->update($request->only([
+    //             'FirstName',
+    //             'LastName',
+    //             'MiddleName',
+    //             'suffix',
+    //             'birthdate',
+    //             'gender',
+    //             'civilStatus',
+    //             'religion',
+    //             'educationalAttainment',
+    //             'course',
+    //             'addressID',
+    //             'employmentDetailsID',
+    //             'tags',
+    //             'passportNo',
+    //             'cvPath'
+    //         ]));
+
+    //         // Return a success response
+    //         return $this->sendSuccess($person, 'Person updated successfully', 200);
+    //     } catch (\Throwable $error) {
+    //         // Catch any unexpected errors and return a 422 error
+    //         return $this->sendError('Unexpected error occurred', $error->getMessage(), 422);
+    //     }
+    // }
+
+    public function store(Request $request)
+    {
+        // Validation rules
+        $rules =  [
+            'id' => 'sometimes|exists:persons,id',
+            'userId' => 'required|exists:users,id',
+            'FirstName' => 'required|string|max:255',
+            'LastName' => 'required|string|max:255',
+            'MiddleName' => 'nullable|string|max:255',
+            'suffix' => 'nullable|string|max:10',
+            'birthdate' => 'required|date',
+            'gender' => 'required|string|max:10',
+            'civilStatus' => 'nullable|string|max:20',
+            'religion' => 'nullable|string|max:50',
+            'educationalAttainment' => 'nullable|string|max:100',
+            'course' => 'nullable|string|max:100',
+            'addressID' => 'nullable|integer|exists:addresses,id',
+            'tags' => 'nullable|string|max:255',
+            'passportNo' => 'required|string|max:20',
+            'cvPath' => 'nullable|file|mimes:pdf,doc,docx', // CV file
+        ];
+
+        // If validation fails, return an error response
+        // Validate the request
+        $validator = Validator::make($request->all(), $rules);
+
+        // If validation fails, return an error
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error', $validator->errors()->toArray(), 422);
+        }
+
+        // Check if updating an existing record
+        $person = Persons::find($request->id);
+        if ($person) {
+            $person->update($request->except('cvPath'));
+
+            // Handle file upload if exists
+            $person->update($request->all());
+            if ($request->hasFile('cvPath')) {
+                $cvPath = $request->file('cvPath')->store('cvs', 'public');
+                $person->cvPath = $cvPath;
+                $person->save();
             }
-            // Update the person record
-            $person->update($request->only(array_keys($rules)));
-            return $this->sendSuccess($person, 'Person updated successfully', 200);
-        } catch (\Throwable $error) {
-            return $this->sendError('unexpectedError', $error, 422);
+
+            $this->updateUser($request->userId, $person->id);
+            return response()->json(['message' => 'Person updated successfully', 'person' => $person], 200);
+        }
+
+        // Otherwise, create a new record
+        $person = Persons::create($request->all());
+        // Handle file upload if exists
+        if ($request->hasFile('cvPath')) {
+            $cvPath = $request->file('cvPath')->store('cvs', 'public');
+            $person->cvPath = $cvPath;
+            $person->save();
+        }
+        $this->updateUser($request->userId, $person->id);
+        return response()->json(['message' => 'Person created successfully', 'person' => $person], 201);
+    }
+
+
+    private function updateUser($userId, $personID)
+    {
+        if ($userId) {
+            $user = User::find($userId);
+            $user->update([
+                'personID' => $personID, // Assuming 'person_id' is the correct field in users table
+            ]);
+        } else {
+            return $this->sendError('User not found', [], 404);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Persons  $person
-     * @return JsonResponse
-     */
+
     public function destroy($personId): JsonResponse
     {
         try {

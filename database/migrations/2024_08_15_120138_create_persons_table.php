@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('addressID')->nullable();
             $table->string('tags')->nullable();
             $table->string('passportNo')->nullable();
+            $table->string('cvPath')->nullable();
 
             $table->timestamps();
         });

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->longText('mission')->nullable();
             $table->longText('vision')->nullable();
             $table->integer('addressID')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }

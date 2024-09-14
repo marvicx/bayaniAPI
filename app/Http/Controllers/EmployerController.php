@@ -42,7 +42,7 @@ class EmployerController extends Controller
                 'description' => 'nullable|string',
                 'mission' => 'nullable|string',
                 'vision' => 'nullable|string',
-                'addressID' => 'nullable|integer',
+                'address' => 'nullable|string',
             ];
 
             // Validate the request
@@ -110,7 +110,7 @@ class EmployerController extends Controller
                 'description' => 'nullable|string',
                 'mission' => 'nullable|string',
                 'vision' => 'nullable|string',
-                'addressID' => 'nullable|integer',
+                'address' => 'nullable|string',
             ];
 
             $validator = Validator::make($request->all(), $rules);

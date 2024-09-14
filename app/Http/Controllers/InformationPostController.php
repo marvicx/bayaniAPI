@@ -144,7 +144,7 @@ class InformationPostController extends Controller
 
             // If no posts are found, return a 404 error response
             if ($posts->isEmpty()) {
-                return $this->sendError('No posts found for this user', [], 404);
+                return $this->sendError('No posts found for this user', [], 201);
             }
 
             return $this->sendSuccess($posts, 'Posts fetched successfully', 200);

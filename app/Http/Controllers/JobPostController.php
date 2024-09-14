@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobPost;
+use App\Models\Persons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,10 +12,59 @@ class JobPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getAllJobs(Request $request)
     {
         try {
+            if (!$request->userId) {
+                return $this->sendError('UserId is required', [], 404);
+            }
+
+            // Fetch the person by user ID
+            $person = Persons::whereHas('user', function ($query) use ($request) {
+                $query->where('id', $request->userId);
+            })->first();
+
+            // If the person is not found, return an error
+            if (!$person) {
+                return $this->sendError('Person not found', [], 404);
+            }
+
+            // Get the person's tags and convert them into an array
+            $personTags = explode(',', $person->tags);
+
+            // Fetch all job posts
             $jobPosts = JobPost::all();
+
+            // Filter and sort job posts based on tag matches
+            $sortedJobPosts = $jobPosts->sortByDesc(function ($jobPost) use ($personTags) {
+                // Get the job post tags and convert them into an array
+                $jobTags = explode(',', $jobPost->tags);
+
+                // Calculate the number of matching tags between the person and job post
+                $matchingTags = array_intersect($personTags, $jobTags);
+
+                // Sort by the number of matching tags (higher number means higher priority)
+                return count($matchingTags);
+            });
+
+            return $this->sendSuccess($sortedJobPosts->values()->all(), 'Jobs fetched successfully', 200);
+        } catch (\Throwable $th) {
+            return $this->sendError('unexpectedError', $th, 500);
+        }
+    }
+
+
+    public function fetchJobBySearchKey(Request $request)
+    {
+        try {
+            // Get the search keyword from the request
+            $search = $request->input('search');
+
+            // Query to search for jobs where the title matches %search%
+            $jobPosts = JobPost::when($search, function ($query, $search) {
+                $query->where('title', 'LIKE', '%' . $search . '%');
+            })->get();
+
             return $this->sendSuccess($jobPosts, 'Jobs fetched successfully', 200);
         } catch (\Throwable $th) {
             return $this->sendError('unexpectedError', $th, 500);
@@ -95,7 +145,7 @@ class JobPostController extends Controller
 
             // If no posts are found, return a 404 error response
             if ($posts->isEmpty()) {
-                return $this->sendError('No posts found for this user', [], 404);
+                return $this->sendError('No posts found for this user', [], 201);
             }
 
             return $this->sendSuccess($posts, 'Posts fetched successfully', 200);
