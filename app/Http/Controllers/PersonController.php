@@ -203,11 +203,7 @@ class PersonController extends Controller
     public function store(Request $request)
     {
         // Validation rules
-        if ($request->id == 0 || $request->id == null) {
-            $request->merge(['id' => null]); // Remove the 'id' or set it to null to trigger creation
-        }
-        $rules =  [
-            'id' => 'sometimes|exists:persons,id',
+        $commonRules = [
             'userId' => 'required|exists:users,id',
             'FirstName' => 'required|string|max:255',
             'LastName' => 'required|string|max:255',
@@ -224,6 +220,12 @@ class PersonController extends Controller
             'passportNo' => 'required|string|max:20',
             'cvPath' => 'nullable|file|mimes:pdf,doc,docx', // CV file
         ];
+
+        if ($request->id == 0 || $request->id == null || $request->id == "") {
+            $rules = $commonRules;
+        } else {
+            $rules = array_merge(['id' => 'sometimes|exists:persons,id'], $commonRules);
+        }
 
         // If validation fails, return an error response
         // Validate the request
