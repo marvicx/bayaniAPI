@@ -15,9 +15,13 @@ class JobPostController extends Controller
     public function getAllJobs(Request $request)
     {
         try {
-            if (!$request->userId) {
-                return $this->sendError('UserId is required', [], 404);
+
+            // Fetch all job posts
+            $jobPosts = JobPost::all();
+            if($request->userId == 0 || $request->userId == null) {
+                return $this->sendSuccess($jobPosts, 'persons fetched successfully', 201);
             }
+
 
             // Fetch the person by user ID
             $person = Persons::whereHas('user', function ($query) use ($request) {
@@ -32,8 +36,8 @@ class JobPostController extends Controller
             // Get the person's tags and convert them into an array
             $personTags = explode(',', $person->tags);
 
-            // Fetch all job posts
-            $jobPosts = JobPost::all();
+
+
 
             // Filter and sort job posts based on tag matches
             $sortedJobPosts = $jobPosts->sortByDesc(function ($jobPost) use ($personTags) {
