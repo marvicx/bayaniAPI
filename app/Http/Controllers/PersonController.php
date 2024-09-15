@@ -203,7 +203,7 @@ class PersonController extends Controller
     public function store(Request $request)
     {
         // Validation rules
-        if ($request->id == 0) {
+        if ($request->id == 0 || $request->id == null) {
             $request->merge(['id' => null]); // Remove the 'id' or set it to null to trigger creation
         }
         $rules =  [
