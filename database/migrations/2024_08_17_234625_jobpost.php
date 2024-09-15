@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('job_location_address_region');
             $table->string('job_location_postal_code');
             $table->string('job_location_address_country');
-            $table->decimal('base_salary_value', 10, 2);
+            $table->string('base_salary_value')->nullable();
             $table->string('base_salary_currency', 3);
             $table->string('base_salary_unit_text')->nullable();
             $table->string('job_benefits')->nullable();
