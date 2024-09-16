@@ -48,7 +48,8 @@ class JobPost extends Model
         'work_hours',
         'tags',
         'status',
-        'postedby'
+        'postedby',
+        'comments'
     ];
 
     /**
@@ -59,7 +60,6 @@ class JobPost extends Model
     protected $casts = [
         'date_posted' => 'date',
         'valid_through' => 'date',
-        'base_salary_value' => 'decimal:2',
     ];
     public function user()
     {

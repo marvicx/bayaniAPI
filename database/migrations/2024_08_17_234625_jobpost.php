@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('tags')->nullable();
             $table->integer('status')->default(1);
             $table->integer('postedby')->nullable();
+            $table->string('comments')->nullable();
             $table->timestamps();
         });
     }

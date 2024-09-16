@@ -18,7 +18,7 @@ class JobPostController extends Controller
 
             // Fetch all job posts
             $jobPosts = JobPost::all();
-            if($request->userId == 0 || $request->userId == null) {
+            if ($request->userId == 0 || $request->userId == null) {
                 return $this->sendSuccess($jobPosts, 'persons fetched successfully', 201);
             }
 
@@ -107,6 +107,7 @@ class JobPostController extends Controller
             'job_location_type' => 'nullable|string|max:255',
             'work_hours' => 'nullable|string|max:255',
             'tags' => 'nullable|string|max:255',
+            'comments' => 'nullable|string',
             'status' => 'nullable|numeric',
 
         ];
@@ -196,6 +197,7 @@ class JobPostController extends Controller
                 'job_location_type' => 'nullable|string|max:255',
                 'work_hours' => 'nullable|string|max:255',
                 'tags' => 'nullable|string|max:255',
+                'comments' => 'nullable|string',
                 'status' => 'nullable|numeric',
             ];
             $validator = Validator::make($request->all(), $rules);
