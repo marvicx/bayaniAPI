@@ -54,11 +54,18 @@ class InformationPostController extends Controller
         $baseUrl = url('/storage/');
         $pageSize = $request->input('pageSize', 10);
         $page = $request->input('page', 1);
+        $isPublished = $request->input('is_published');
+        $category = $request->input('category');
 
         $posts = InformationPost::with('images')
+            ->when($isPublished, function ($query) use ($isPublished) {
+                return $query->where('is_published', $isPublished);
+            })
+            ->when($category, function ($query) use ($category) {
+                return $query->where('category', $category);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate($pageSize, ['*'], 'page', $page);
-
         $posts->transform(function ($post) use ($baseUrl) {
             // Loop through each image in the post
             if ($post->images) {
