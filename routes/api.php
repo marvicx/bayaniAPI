@@ -10,6 +10,7 @@ use App\Http\Controllers\EventImageController;
 use App\Http\Controllers\InformationPostController;
 use App\Http\Controllers\JobApplicantController;
 use App\Http\Controllers\JobPostController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PersonController;
 
 use Illuminate\Support\Facades\Route;
@@ -40,5 +41,6 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::apiResource('eventImages', EventImageController::class);
         Route::get('eventImages/information/{postid}', [EventImageController::class, 'getImageByPostId']);
         Route::apiResource('jobApplicant', JobApplicantController::class);
+        Route::post('/email', [MailController::class, 'sendEmail']);
     });
 });

@@ -17,31 +17,20 @@ class ResetPasswordNotification extends Notification
     public $mailer;
     private $otp;
 
-    /**
-     * Create a new notification instance.
-     */
     public function __construct()
     {
-        $this->message = 'use the below code for reset password';
-        $this->subject = 'password resetting';
+        $this->message = 'Use the code below to reset your password:';
+        $this->subject = 'Password Reset Request';
         $this->fromEmail = 'test@gmail.com';
         $this->mailer = 'smtp';
         $this->otp = new Otp();
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         $otp = $this->otp->generate($notifiable->email, 'numeric', 6, 15);
@@ -49,14 +38,11 @@ class ResetPasswordNotification extends Notification
             ->mailer('smtp')
             ->subject($this->subject)
             ->line($this->message)
-            ->line("code :" . $otp->token);
+            ->line("Code: " . $otp->token)
+            ->line('Thank you for using our application!') // Custom closing statement
+            ->salutation('');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(object $notifiable): array
     {
         return [
