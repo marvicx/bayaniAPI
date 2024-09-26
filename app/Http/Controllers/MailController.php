@@ -51,13 +51,13 @@ class MailController extends Controller
 
         // Check if the email already exists in the users table
         if (User::where('email', $email)->exists()) {
-            return response()->json(['error' => 'Email already exists.'], 400);
+            return response()->json(['error' => 'Email already exists.'], 200);
         }
 
-        $verificationCode = Str::random(6); // Generate a random 6-character code
+        $verificationCode = random_int(100000, 999999); // Generate a random 6-int code
 
-        // Define the validity period (e.g., 10 minutes)
-        $validityPeriod = now()->addMinutes(10);
+        // Define the validity period (e.g., 1 minute)
+        $validityPeriod = now()->addMinutes(1);
 
 
         try {

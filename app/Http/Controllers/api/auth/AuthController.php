@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\api\auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
+use App\Models\Employer;
 use App\Models\Otp;
+use App\Models\Persons;
 use App\Models\User;
 use App\Models\Verificationotp;
 use Illuminate\Http\JsonResponse;
@@ -30,14 +33,40 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+        // Create the address and person records only for 'ofw' (user_type == 2)
+        $person = null;
+        if (request('user_type') == 2) { // ofw
+            $address = Address::create([
+                'email' => request('email'),
+            ]);
+            $person = Persons::create([
+                'FirstName' => request('firstname'),
+                'LastName' => request('lastname'),
+                'addressID' => $address->id,
+            ]);
+        }
 
+        // Create the user
         $user = User::create([
             'name' => request('name'),
             'email' => request('email'),
-            'email_verified_at' => now(),
             'user_type' => request('user_type'),
             'password' => Hash::make(request('password')),
+            'personID' => $person ? $person->id : null, // Assign personID if exists
+            // Don't set email_verified_at yet if you're sending a verification email
         ]);
+
+        // Create employer record if user_type is 1 (employer)
+        $employer = null;
+        if (request('user_type') == 1) {
+            $employer = Employer::create([
+                'userId' => $user->id,
+            ]);
+            $user->update([
+                'employerID' => $employer->id, // Update employerID only if it's an employer
+            ]);
+        }
+
 
         return $this->login();
     }
@@ -139,6 +168,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Code verified successfully. You can now proceed to register.']);
         }
 
-        return response()->json(['error' => 'Invalid verification code.'], 400);
+        return response()->json(['error' => 'Invalid verification code.'], 200);
     }
 }
