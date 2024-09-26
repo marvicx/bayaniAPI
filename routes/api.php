@@ -21,6 +21,8 @@ Route::prefix('auth')->middleware('api')->group(function () {
     Route::post('/password/forgot', [ForgotPasswordController::class, 'forgotPassword']);
     Route::post('/password/reset', [ResetPasswordController::class, 'resetPassword']);
     Route::get('/pub-information', [InformationPostController::class, 'index']);
+    Route::post('/emailverification', [MailController::class, 'sendVerificationCode']);
+    Route::post('/verifyCode', [AuthController::class, 'verifyCode']);
 
     Route::middleware('auth:api')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

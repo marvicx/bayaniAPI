@@ -15,7 +15,7 @@ class JobApplicantController extends Controller
                 $query->select('id', 'name', 'email', 'personID')
                     ->with(['person' => function ($personQuery) {
                         // Select necessary fields from 'persons' and eager load 'address'
-                        $personQuery->select('id', 'FirstName', 'LastName', 'birthdate', 'addressID')
+                        $personQuery->select('id', 'FirstName', 'LastName', 'birthdate', 'addressID', 'cvPath')
                             ->with(['address' => function ($addressQuery) {
                                 // Select fields from 'address' table
                                 $addressQuery->select(
@@ -42,6 +42,7 @@ class JobApplicantController extends Controller
                     'firstName' => $applicant->user->person->FirstName ?? null,
                     'lastName' => $applicant->user->person->LastName ?? null,
                     'birthdate' => $applicant->user->person->birthdate ?? null,
+                    'cvPath' => $this->baseUrl . '/' . $applicant->user->person->cvPath ?? null,
                     'address' => [
                         'provinceID' => $applicant->user->person->address->provinceID ?? null,
                         'cityID' => $applicant->user->person->address->cityID ?? null,
