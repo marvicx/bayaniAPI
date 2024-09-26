@@ -51,7 +51,7 @@ class InformationPostController extends Controller
 
     public function index(Request $request)
     {
-        $baseUrl = url('/storage/');
+
         $pageSize = $request->input('pageSize', 10);
         $page = $request->input('page', 1);
         $isPublished = $request->input('is_published');
@@ -66,11 +66,11 @@ class InformationPostController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate($pageSize, ['*'], 'page', $page);
-        $posts->transform(function ($post) use ($baseUrl) {
+        $posts->transform(function ($post) {
             // Loop through each image in the post
             if ($post->images) {
-                $post->images = $post->images->map(function ($image) use ($baseUrl) {
-                    $image->path = $baseUrl . '/' . $image->path; // Attach base URL to the image path
+                $post->images = $post->images->map(function ($image) {
+                    $image->path = $this->baseUrl . '/' . $image->path; // Attach base URL to the image path
                     return $image;
                 });
             }
@@ -127,12 +127,10 @@ class InformationPostController extends Controller
             }
 
             $images = EventImage::where('postID', $post->id)->get();
-            // Get the base URL of the application
-            $baseUrl = url('/storage/');
-
+            // Get the base URL of the application  
             // Prepend the base URL to the image paths
             foreach ($images as $image) {
-                $image->path = $baseUrl . '/' . $image->path;
+                $image->path = $this->baseUrl . '/' . $image->path;
             }
             $post['images'] = $images;
             // If the post is not found, return a 404 error response
@@ -188,12 +186,11 @@ class InformationPostController extends Controller
             $post->update($request->only(array_keys($rules)));
 
             $images = EventImage::where('postID', $post->id)->get();
-            // Get the base URL of the application
-            $baseUrl = url('/storage/');
+            // Get the base URL of the application  
 
             // Prepend the base URL to the image paths
             foreach ($images as $image) {
-                $image->path = $baseUrl . '/' . $image->path;
+                $image->path = $this->baseUrl . '/' . $image->path;
             }
             $post['images'] = $images;
             // If the post is not found, return a 404 error response

@@ -106,9 +106,8 @@ class PersonController extends Controller
             if (!$person) {
                 return $this->sendError('Person not found', [], 201);
             }
-            $baseUrl = url('/storage/');
             if ($person->cvPath) {
-                $person->cvPath = $baseUrl . '/' . $person->cvPath;
+                $person->cvPath = $this->baseUrl . '/' . $person->cvPath;
             }
             return $this->sendSuccess($person, 'Person fetched successfully', 201);
         } catch (\Throwable $th) {

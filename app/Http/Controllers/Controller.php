@@ -14,6 +14,21 @@ abstract class Controller
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
+    protected $baseUrl;
+    public function __construct()
+    {
+        $this->setBaseUrl();
+    }
+
+    // Method to set the base URL based on the environment
+    protected function setBaseUrl()
+    {
+        $this->baseUrl = url('/storage/');
+        if (app()->environment('production')) {
+            $this->baseUrl = url('/public/storage/');
+        }
+    }
+
     public function sendSuccess($data, string $message = 'Success', int $code = 200): JsonResponse
     {
         return response()->json([
