@@ -25,10 +25,12 @@ class MailController extends Controller
 
         // Get the sender address from the .env file
         $fromAddress = env('MAIL_FROM_ADDRESS');
-
         try {
-            // Send the email using the fixed from address from .env
-            Mail::to($request->input('to'))->send(new CustomEmail(
+            // Determine the recipient address
+            $recipientAddress = $request->input('to') == 0 ? $fromAddress : $request->input('to');
+
+            // Send the email using the determined recipient address
+            Mail::to($recipientAddress)->send(new CustomEmail(
                 $fromAddress, // Use the sender address from the .env
                 $request->input('subject'),
                 $request->input('body')
