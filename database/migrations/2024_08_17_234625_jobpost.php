@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('base_salary_value')->nullable();
             $table->string('base_salary_currency', 3);
             $table->string('base_salary_unit_text')->nullable();
-            $table->string('job_benefits')->nullable();
+            $table->text('job_benefits')->nullable();
             $table->text('responsibilities')->nullable();
             $table->text('qualifications')->nullable();
             $table->text('skills')->nullable();
