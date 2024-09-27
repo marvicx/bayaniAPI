@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobPost;
 use App\Models\Persons;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -132,10 +133,17 @@ class JobPostController extends Controller
     {
         try {
             $job = JobPost::find($jobId);
+
             // If the job is not found, return a 404 error response
             if (!$job) {
                 return $this->sendError('Job not found', [], 404);
             }
+
+            $user = User::find($job->postedby);
+
+            // Add the user's email to the job object
+            $job->user_email = $user->email;
+
             return $this->sendSuccess($job, 'Job fetched successfully', 201);
         } catch (\Throwable $th) {
             return $this->sendError('unexpectedError', $th, 500);

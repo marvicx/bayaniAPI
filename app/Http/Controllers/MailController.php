@@ -16,12 +16,18 @@ class MailController extends Controller
 {
     public function sendEmail(Request $request)
     {
-        // Validate the payload
-        $request->validate([
-            'to' => 'required|email',
-            'subject' => 'required|string',
-            'body' => 'required|string',
-        ]);
+        if ($request->input('to') == 0) {
+            $request->validate([
+                'subject' => 'required|string',
+                'body' => 'required|string',
+            ]);
+        } else {
+            $request->validate([
+                'to' => 'required|email',
+                'subject' => 'required|string',
+                'body' => 'required|string',
+            ]);
+        }
 
         // Get the sender address from the .env file
         $fromAddress = env('MAIL_FROM_ADDRESS');
