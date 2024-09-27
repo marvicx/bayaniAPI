@@ -19,7 +19,19 @@ class PersonController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $persons = Persons::all();
+            $persons = Persons::with('user:id,email,personID') // Only load the 'id' and 'email' fields from the user
+                ->get()
+                ->map(function ($person) {
+                    // Add person columns and related user's email and user_id without returning the entire user object
+                    return array_merge(
+                        $person->toArray(), // Convert the person model to an array to get all its columns
+                        [
+                            'email' => $person->user->email ?? null,
+                            'userID' => $person->user->id ?? null,
+                        ]
+                    );
+                });
+
             return $this->sendSuccess($persons, 'persons fetched successfully', 201);
         } catch (\Throwable $th) {
             return $this->sendError('unexpectedError', $th, 500);
