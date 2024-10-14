@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\api\auth\AuthController;
 use App\Http\Controllers\api\auth\ForgotPasswordController;
 use App\Http\Controllers\api\auth\ResetPasswordController;
+use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\EmploymentDetailsController;
 use App\Http\Controllers\EventImageController;
@@ -11,8 +12,10 @@ use App\Http\Controllers\InformationPostController;
 use App\Http\Controllers\JobApplicantController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\PersonController;
-
+use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\RegionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->middleware('api')->group(function () {
@@ -44,5 +47,10 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::get('eventImages/information/{postid}', [EventImageController::class, 'getImageByPostId']);
         Route::apiResource('jobApplicant', JobApplicantController::class);
         Route::post('/email', [MailController::class, 'sendEmail']);
+        
+        Route::apiResource('municipalities', MunicipalityController::class);
+        Route::apiResource('provinces', ProvinceController::class);
+        Route::apiResource('barangays', BarangayController::class);
+        Route::apiResource('regions', RegionController::class);
     });
 });

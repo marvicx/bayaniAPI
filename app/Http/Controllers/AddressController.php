@@ -28,6 +28,7 @@ class AddressController extends Controller
             $rules = [
                 'userId' => 'required',
                 'provinceID' => 'required',
+                'regionID' => 'required',
                 'cityID' => 'required',
                 'barangayID' => 'required',
                 'zipcode' => 'required',
@@ -101,12 +102,12 @@ class AddressController extends Controller
             $rules = [
                 'userId' => 'required',
                 'provinceID' => 'required',
+                'regionID' => 'required',
                 'cityID' => 'required',
                 'barangayID' => 'required',
                 'zipcode' => 'required',
                 'street' => 'required|string',
-                'mobileNo' => 'required',
-                'email' => 'required|email',
+                'mobileNo' => 'required', 
                 'telephoneNo' => 'nullable|string',
                 'fax' => 'nullable|string',
                 'ofwForeignAddress' => 'nullable|string',

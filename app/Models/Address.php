@@ -23,6 +23,7 @@ class Address extends Model
      */
     protected $fillable = [
         'provinceID',
+        'regionID',
         'cityID',
         'barangayID',
         'zipcode',
