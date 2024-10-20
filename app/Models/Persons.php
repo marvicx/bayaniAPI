@@ -55,6 +55,6 @@ class Persons extends Model
     }
     public function employmentDetails()
     {
-        return $this->hasOne(EmploymentDetails::class, 'employmentDetailsID', 'id');
+        return $this->hasOne(EmploymentDetails::class, 'personID', 'id');
     }
 }

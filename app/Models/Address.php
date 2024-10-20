@@ -45,4 +45,23 @@ class Address extends Model
     {
         return $this->hasOne(Employer::class, 'addressID', 'id');
     }
+    public function barangay()
+    {
+        return $this->belongsTo(Barangay::class, 'barangayID', 'code');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Regions::class, 'regionID', 'code');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'provinceID', 'code');
+    }
+
+    public function municipality()
+    {
+        return $this->belongsTo(Municipality::class, 'cityID', 'code');
+    }
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ReportsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->middleware('api')->group(function () {
@@ -52,5 +53,7 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::apiResource('provinces', ProvinceController::class);
         Route::apiResource('barangays', BarangayController::class);
         Route::apiResource('regions', RegionController::class);
+        Route::get('reports/OfwList', [ReportsController::class, 'OfwList']);
+        Route::get('reports/getAllEmployers', [ReportsController::class, 'AllEmployers']);
     });
 });

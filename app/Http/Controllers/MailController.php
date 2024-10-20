@@ -83,8 +83,7 @@ class MailController extends Controller
             Mail::to($email)->send(new CustomEmail(
                 $fromAddress,
                 'Email Verification Code',
-                "Your verification code is: $verificationCode",
-                "Please use this code verify your account. For your security, do not share this code with anyone. If you did not request this code, please ignore this message. Thank you"
+                "Your verification code is: $verificationCode, Please use this code verify your account. For your security, do not share this code with anyone. If you did not request this code, please ignore this message. Thank you"
             ));
 
             return response()->json(['message' => 'Verification code sent to your email.'], 200);

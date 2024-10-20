@@ -40,4 +40,8 @@ class EmploymentDetails extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function employmentDetails()
+    {
+        return $this->belongsTo(Persons::class);
+    }
 }
