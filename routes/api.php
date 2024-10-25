@@ -10,6 +10,7 @@ use App\Http\Controllers\EmploymentDetailsController;
 use App\Http\Controllers\EventImageController;
 use App\Http\Controllers\InformationPostController;
 use App\Http\Controllers\JobApplicantController;
+use App\Http\Controllers\JobCategoryController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\MunicipalityController;
@@ -48,12 +49,18 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::get('eventImages/information/{postid}', [EventImageController::class, 'getImageByPostId']);
         Route::apiResource('jobApplicant', JobApplicantController::class);
         Route::post('/email', [MailController::class, 'sendEmail']);
-        
+
         Route::apiResource('municipalities', MunicipalityController::class);
         Route::apiResource('provinces', ProvinceController::class);
         Route::apiResource('barangays', BarangayController::class);
         Route::apiResource('regions', RegionController::class);
+        Route::apiResource('job-categories', JobCategoryController::class);
+
         Route::get('reports/OfwList', [ReportsController::class, 'OfwList']);
         Route::get('reports/getAllEmployers', [ReportsController::class, 'AllEmployers']);
+        Route::get('reports/numberofapplicants', [ReportsController::class, 'GetNumberofApplicant']);
+        Route::get('reports/getnumberofcompany', [ReportsController::class, 'GetNumberofCompany']);
+        Route::get('reports/getnumberofofw', [ReportsController::class, 'GetNumberofOFW']);
+        Route::get('reports/gettoppaidjobs', [ReportsController::class, 'GetTopPaidJobs']);
     });
 });
