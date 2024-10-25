@@ -14,4 +14,10 @@ class JobCategory extends Model
 
     // Specify which attributes are mass assignable
     protected $fillable = ['name'];
+
+
+    public function jobPost()
+    {
+        return $this->hasMany(JobPost::class, 'industry', 'id');
+    }
 }

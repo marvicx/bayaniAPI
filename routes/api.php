@@ -62,5 +62,6 @@ Route::prefix('auth')->middleware('api')->group(function () {
         Route::get('reports/getnumberofcompany', [ReportsController::class, 'GetNumberofCompany']);
         Route::get('reports/getnumberofofw', [ReportsController::class, 'GetNumberofOFW']);
         Route::get('reports/gettoppaidjobs', [ReportsController::class, 'GetTopPaidJobs']);
+        Route::get('reports/getcompanyhighhired', [ReportsController::class, 'GetCompanyHighHired']);
     });
 });

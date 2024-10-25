@@ -242,11 +242,104 @@ class ReportsController extends Controller
     public function GetTopPaidJobs()
     {
         try {
-            $jobPosts = JobPost::all();
-
-            return $this->sendSuccess($jobPosts, 'OFW for the current and previous year fetched successfully', 200);
+            $currentYear = now()->year;
+            $previousYear = $currentYear - 1;
+    
+            // Fetch current year's job posts with their job categories
+            $currentYearData = JobPost::with('jobCategory')
+                ->whereYear('created_at', $currentYear)
+                ->get()
+                ->groupBy('jobCategory.id')
+                ->map(function ($posts, $categoryId) {
+                    $categoryName = $posts->first()->jobCategory->name;
+    
+                    $highestBaseSalary = $posts->map(function ($post) {
+                        $salaryRange = explode('-', $post->base_salary_value);
+                        return isset($salaryRange[1]) ? (int)str_replace(',', '', trim($salaryRange[1])) : 0;
+                    })->max();
+    
+                    return [
+                        'name' => $categoryName,
+                        'highest_base_salary' => $highestBaseSalary,
+                    ];
+                })->values();
+    
+            // Fetch previous year's job posts with their job categories
+            $previousYearData = JobPost::with('jobCategory')
+                ->whereYear('created_at', $previousYear)
+                ->get()
+                ->groupBy('jobCategory.id')
+                ->map(function ($posts, $categoryId) {
+                    $categoryName = $posts->first()->jobCategory->name;
+    
+                    $highestBaseSalary = $posts->map(function ($post) {
+                        $salaryRange = explode('-', $post->base_salary_value);
+                        return isset($salaryRange[1]) ? (int)str_replace(',', '', trim($salaryRange[1])) : 0;
+                    })->max();
+    
+                    return [
+                        'name' => $categoryName,
+                        'highest_base_salary' => $highestBaseSalary,
+                    ];
+                })->values();
+    
+            $response = [
+                'currentYear' => $currentYearData,
+                'previousYear' => $previousYearData,
+            ];
+    
+            return $this->sendSuccess($response, 'Top paid jobs grouped by category for current and previous years fetched successfully', 200);
         } catch (\Throwable $th) {
             return $this->sendError('unexpectedError', $th, 500);
         }
     }
+
+    public function GetCompanyHighHired() {
+        $currentYear = now()->year;
+        $previousYear = $currentYear - 1;
+
+        $jobPostsCurr = JobPost::has('applicants', '>', 0)
+            ->whereHas('applicants', function($query) {
+                $query->where('status', 'hired');
+            })
+            ->whereYear('created_at', $currentYear)
+            ->selectRaw('hiring_organization_name, COUNT(*) as total') // Select organization name and count
+            ->groupBy('hiring_organization_name') // Group by organization name
+            ->get();
+    
+        // Format the result into an array
+        $currentYearData = $jobPostsCurr->map(function($jobPost) {
+            return [
+                'hiring_organization_name' => $jobPost->hiring_organization_name,
+                'total' => $jobPost->total,
+            ];
+        });
+
+        $jobPostsCurr = JobPost::has('applicants', '>', 0)
+            ->whereHas('applicants', function($query) {
+                $query->where('status', 'hired');
+            })
+            ->whereYear('created_at', $previousYear)
+            ->selectRaw('hiring_organization_name, COUNT(*) as total') // Select organization name and count
+            ->groupBy('hiring_organization_name') // Group by organization name
+            ->get();
+
+        // Format the result into an array
+        $previousYearData = $jobPostsCurr->map(function($jobPost) {
+            return [
+                'hiring_organization_name' => $jobPost->hiring_organization_name,
+                'total' => $jobPost->total,
+            ];
+        });
+
+        $response = [
+            'currentYear' => $currentYearData,
+            'previousYear' => $previousYearData,
+        ];
+
+        return $this->sendSuccess($response, 'Top companies for the current and previous year fetched successfully', 200);
+    }
+    
+    
+    
 }

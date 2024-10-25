@@ -40,4 +40,8 @@ class JobApplicants extends Model
     {
         return $this->belongsTo(User::class, 'appliedUserID');
     }
+    public function jobPost()
+    {
+        return $this->belongsTo(JobPost::class, 'jobID');
+    }
 }

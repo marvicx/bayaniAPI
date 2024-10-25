@@ -65,4 +65,12 @@ class JobPost extends Model
     {
         return $this->belongsTo(User::class, 'postedby', 'id');
     }
+    public function jobCategory()
+    {
+        return $this->belongsTo(JobCategory::class, 'industry', 'id');
+    }
+    public function applicants()
+    {
+        return $this->hasMany(JobApplicants::class, 'jobID');
+    }
 }
